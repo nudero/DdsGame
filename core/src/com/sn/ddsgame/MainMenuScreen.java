@@ -2,6 +2,7 @@ package com.sn.ddsgame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,6 +25,14 @@ public class MainMenuScreen implements Screen {
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		
+		
+		FileHandle fh = Gdx.files.internal("levels");
+		if (fh.exists()) {
+			System.out.println(fh.name());
+		}
+		FileHandle[] files = fh.list();
+		System.out.println(files.length+"");
+		
 		Table table = new Table();
 		stage.addActor(table);
 		table.setFillParent(true);
@@ -41,6 +50,12 @@ public class MainMenuScreen implements Screen {
 		table.row();
 		tb = new TextButton("help", skin);
 		table.add(tb);
+		tb.addListener(new ClickListener() {
+			@Override
+			public void clicked (InputEvent event, float x, float y) {
+				help();
+			}
+		});
 		
 		table.row();
 		tb = new TextButton("about", skin);
@@ -49,6 +64,10 @@ public class MainMenuScreen implements Screen {
 	
 	void start() {
 		game.setScreen(new GameScreen(game));
+	}
+	
+	void help() {
+		game.setScreen(new TestScreen(game));
 	}
 	
 	@Override

@@ -28,7 +28,7 @@ public class AESHelper {
 		String content = "6222001521522152212";
 		// 加密（传输)
 		System.out.println("加密前：" + content);
-		byte[] encryptResult = encrypt(content, password);
+		byte[] encryptResult = encrypt(content.getBytes(), password);
 
 		// 以HEX进行传输
 		String codedtextb = Base64.encode(encryptResult);// data transfer as text
@@ -36,8 +36,8 @@ public class AESHelper {
 		encryptResult = Base64.decode(codedtextb);
 
 		// 解密
-		String decryptResultb = decrypt(encryptResult, password);
-		System.out.println("解密后：" + decryptResultb);
+//		String decryptResultb = decrypt(encryptResult, password);
+//		System.out.println("解密后：" + decryptResultb);
 	}
 
 	static {
@@ -56,7 +56,7 @@ public class AESHelper {
 	 * @param message
 	 * @return
 	 */
-	public static byte[] encrypt(String message, String passWord) {
+	public static byte[] encrypt(byte[] data, String passWord) {
 		// if (passWord == null) {
 		// System.out.print("passWord为空null");
 		// return null;
@@ -72,7 +72,7 @@ public class AESHelper {
 			SecretKey secretKey = new SecretKeySpec(passWord.getBytes(), "AES");// 获得密钥
 			/* 获得一个私鈅加密类Cipher，DESede-》AES算法，ECB是加密模式，PKCS5Padding是填充方式 */
 			cipher.init(Cipher.ENCRYPT_MODE, secretKey); // 设置工作模式为加密模式，给出密钥
-			byte[] resultBytes = cipher.doFinal(message.getBytes("UTF-8")); // 正式执行加密操作
+			byte[] resultBytes = cipher.doFinal(data); // 正式执行加密操作
 			return resultBytes;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,18 +87,17 @@ public class AESHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String decrypt(byte[] messageBytes, String passWord) {
-		String result = "";
+	public static byte[] decrypt(byte[] messageBytes, String passWord) {
 		try {
 			/* AES算法 */
 			SecretKey secretKey = new SecretKeySpec(passWord.getBytes(), "AES");// 获得密钥
 			cipher.init(Cipher.DECRYPT_MODE, secretKey); // 设置工作模式为解密模式，给出密钥
 			byte[] resultBytes = cipher.doFinal(messageBytes);// 正式执行解密操作
-			result = new String(resultBytes, "UTF-8");
+			return resultBytes;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return null;
 	}
 
 	/**

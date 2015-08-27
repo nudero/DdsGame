@@ -1,0 +1,14 @@
+{
+	"bg":"1111",
+	"music":"222",
+	"n":3,
+	"nextime":1000
+	"actime":3000
+	
+	"steps":[
+		{"num":5},
+		{"actime":2000, "num":5}
+		{"actime":1000, "num":5}
+		{"nextime":500, "num":10}
+	]
+}
