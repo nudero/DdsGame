@@ -1,0 +1,14 @@
+{
+	"n":4,
+	"music":"moon",
+	"bg":"ground",
+	"actor":"dog",
+	"time":1,
+
+	"data":[
+		{"time":2, "num":10, "pos":[-1]},
+		{"time":1, "num":1, "pos":[0,1,2]},
+		{"time":0.5, "num":1, "pos":[3,4,5]},
+		{"time":2, "num":10, "pos":[-1]},
+	]
+}

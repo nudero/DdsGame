@@ -38,6 +38,12 @@ public class GameScreen implements Screen {
 	private int curShowN = -1;
 	private Color origColor = null;
 	
+	
+	
+//	3 2 1 GO
+	public int step = 0;
+	public int posindex = 0;
+	
 	private int score = 0;
 	private Label label;
 	

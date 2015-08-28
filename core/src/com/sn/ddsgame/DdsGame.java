@@ -6,7 +6,7 @@ import com.sn.ddsgame.level.LevelManager;
 public class DdsGame extends Game {
 	@Override
 	public void create () {
-//		LevelManager.getInstance().loadLevelData();
+		LevelManager.getInstance().loadLevelData();
 		setScreen(new MainMenuScreen(this));
 	}
 }
