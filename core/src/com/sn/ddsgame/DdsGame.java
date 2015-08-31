@@ -1,6 +1,7 @@
 package com.sn.ddsgame;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.sn.ddsgame.level.LevelManager;
 
 public class DdsGame extends Game {

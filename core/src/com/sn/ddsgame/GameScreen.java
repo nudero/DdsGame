@@ -20,6 +20,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.sn.ddsgame.level.Level;
+import com.sn.ddsgame.level.LevelData;
+import com.sn.ddsgame.level.LevelManager;
 
 public class GameScreen implements Screen {
 
@@ -47,6 +50,8 @@ public class GameScreen implements Screen {
 	private int score = 0;
 	private Label label;
 	
+	private Level level = null;
+	
 	public GameScreen(DdsGame game) {
 		this.game = game;
 		
@@ -66,38 +71,14 @@ public class GameScreen implements Screen {
 		int w = (Const.DESIGN_HEIGHT - n*Const.PAD_DIST - 2*Const.EDGE_DIST) / n;
 		table.defaults().width(w).height(w).pad(Const.PAD_DIST);
 		
-		for (int i = 0; i < n; i++) {
-			table.row();
-			for (int j = 0; j < n; j++) {
-				Image img1 = new Image(new Texture("hole.jpg"));
-				table.add(img1);
-//				img1.setColor(Color.GREEN);
-				img1.addListener(new ClickListener() {
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						int idx = (Integer) event.getTarget().getUserObject();
-						if (idx == curShowN) {
-							Image img = images.get(curShowN);
-							img.setColor(origColor);
-							curShowN = -1;
-							System.out.println(++score);
-							label.setText(score+"");
-						}
-					}
-				});
-				images.add(img1);
-				img1.setUserObject(images.size()-1);
-				origColor = img1.getColor();
-//				RepeatAction act = Actions.repeat(RepeatAction.FOREVER, Actions.sequence(Actions.scaleTo(0.8f, 0.8f, 0.5f), Actions.scaleTo(1.0f, 1.0f, 0.5f)));
-//				img1.addAction(act);
-			}
-		}
-		
 		label = new Label("0", skin);
 		label.setAlignment(Align.right);
 		stage.addActor(label);
-//		table.row();
-//		table.add(lbl);
+		
+		LevelData ld = LevelManager.getInstance().getLevelData(1);
+		level = new Level(ld);
+		HoleManager.getInstance().init(table, level.data.n);
+		level.start();
 	}
 	
 	@Override
@@ -135,8 +116,16 @@ public class GameScreen implements Screen {
 		}
 	}
 	
-	private void hit() {
+	private void dologic(float dt) {
+		int index = level.step(dt);
+		if (index != Level.NONE) {
+			boolean ret = HoleManager.getInstance().duuoo(index, level.isOver());
+			if (!ret) {
+				Log.error("level"+level.data.level+" duuoo failed, index="+index);
+			}
+		}
 		
+		HoleManager.getInstance().step(dt);
 	}
 	
 	@Override
@@ -144,7 +133,8 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		timee(delta);
+//		timee(delta);
+		dologic(delta);
 		
 		stage.act(Math.min(delta, 1/30f));
 		stage.draw();

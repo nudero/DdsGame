@@ -3,11 +3,10 @@ package com.sn.ddsgame.level;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.sn.ddsgame.Log;
 
 public class LevelManager {
 
@@ -23,7 +22,8 @@ public class LevelManager {
 		return instance;
 	}
 	
-	private HashMap<String, JsonValue> allLevelDatas = new HashMap<String, JsonValue>();
+//	private HashMap<String, JsonValue> allLevelDatas = new HashMap<String, JsonValue>();
+	private HashMap<Integer, LevelData> allLevelDatas = new HashMap<Integer, LevelData>();
 	
 	public boolean loadLevelData() {
 		JsonReader jr = new JsonReader();
@@ -34,39 +34,75 @@ public class LevelManager {
 			if (!fh.exists()) {
 				break;
 			}
-			else {
-				max_level++;
-				
+			else {				
 				JsonValue leveldata = jr.parse(fh);
 				LevelData ld = new LevelData();
-				ld.level = max_level;
+				ld.level = ++max_level;
 				ld.n = leveldata.getInt("n");
-				ld.time = leveldata.getFloat("time");
+				
+				float roundTime = leveldata.getFloat("roundTime");
+				if (roundTime <= 0) {
+					Log.error("level"+ld.level+" roundTime is error");
+					return false;
+				}
+				
 				ld.music = leveldata.getString("music");
 				ld.bg = leveldata.getString("bg");
 				ld.actor = leveldata.getString("actor");
+				
 				JsonValue data = leveldata.get("data");
 				for (int i = 0; i < data.size; i++) {
 					JsonValue jv = data.get(i);
-					ld.times.add(jv.getFloat("time"));
+					float stepTime = jv.getFloat("stepTime");
+					
 					int num = jv.getInt("num");
+					if (num <= 0) {
+						Log.error("level"+ld.level+" num is error");
+						return false;
+					}
+					
 					for (int j = 0; j < num; j++) {
 						JsonValue jpos = jv.get("pos");
+						if (jpos.size <= 0) {
+							Log.error("level"+ld.level+" pos num is error");
+							return false;
+						}
+						
 						for (int n = 0; n < jpos.size; n++) {
-							ld.poses.add(jpos.getInt(n));
+							PosTime pt = new PosTime();
+							pt.pos = jpos.getInt(n);
+							if (pt.pos < -1) {
+								Log.error("level"+ld.level+" pos is error");
+								return false;
+							}
+							pt.time = stepTime;
+							ld.postimes.add(pt);
 						}
 					}
+					
+					ld.postimes.get(ld.postimes.size()-1).time = roundTime;
 				}
 				
-				allLevelDatas.put(fh.name(), leveldata);
-				System.out.println(fh.readString());
+				allLevelDatas.put(ld.level, ld);
+				
+//				allLevelDatas.put(fh.name(), leveldata);
+//				System.out.println(fh.readString());
 			}
 		}
 		
 		if (max_level == 0) {
+			Log.error("no valide level data file found");
 			return false;
 		}
+		
 		System.out.println("max_level is "+max_level);
 		return true;
+	}
+	
+	public LevelData getLevelData(int level) {
+		if (allLevelDatas.containsKey(level)) {
+			return allLevelDatas.get(level);
+		}
+		return null;
 	}
 }
