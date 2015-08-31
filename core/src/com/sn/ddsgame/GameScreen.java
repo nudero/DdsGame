@@ -4,20 +4,14 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sn.ddsgame.level.Level;
@@ -42,8 +36,6 @@ public class GameScreen implements Screen {
 	private Color origColor = null;
 	
 	
-	
-//	3 2 1 GO
 	public int step = 0;
 	public int posindex = 0;
 	
@@ -75,7 +67,7 @@ public class GameScreen implements Screen {
 		label.setAlignment(Align.right);
 		stage.addActor(label);
 		
-		LevelData ld = LevelManager.getInstance().getLevelData(1);
+		LevelData ld = LevelManager.getInstance().getLevelData(LevelManager.getInstance().getCurLevel());
 		level = new Level(ld);
 		HoleManager.getInstance().init(table, level.data.n);
 		level.start();

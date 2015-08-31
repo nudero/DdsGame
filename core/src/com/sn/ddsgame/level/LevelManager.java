@@ -3,6 +3,7 @@ package com.sn.ddsgame.level;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -12,7 +13,8 @@ public class LevelManager {
 
 	private static LevelManager instance = new LevelManager();
 	
-	private int max_level = 0;
+	private int maxLevel = 0;
+	private int curLevel = 1;
 	
 	private LevelManager() {
 		
@@ -26,10 +28,13 @@ public class LevelManager {
 	private HashMap<Integer, LevelData> allLevelDatas = new HashMap<Integer, LevelData>();
 	
 	public boolean loadLevelData() {
+		Preferences pref = Gdx.app.getPreferences("dds");
+		curLevel = pref.getInteger("curLevel", 1);
+		
 		JsonReader jr = new JsonReader();
 		
 		while(true) {
-			String path = "level/"+(max_level+1)+".json";
+			String path = "level/"+(maxLevel+1)+".json";
 			FileHandle fh = Gdx.files.internal(path);
 			if (!fh.exists()) {
 				break;
@@ -37,7 +42,7 @@ public class LevelManager {
 			else {				
 				JsonValue leveldata = jr.parse(fh);
 				LevelData ld = new LevelData();
-				ld.level = ++max_level;
+				ld.level = ++maxLevel;
 				ld.n = leveldata.getInt("n");
 				
 				float roundTime = leveldata.getFloat("roundTime");
@@ -90,12 +95,12 @@ public class LevelManager {
 			}
 		}
 		
-		if (max_level == 0) {
+		if (maxLevel == 0) {
 			Log.error("no valide level data file found");
 			return false;
 		}
 		
-		System.out.println("max_level is "+max_level);
+		System.out.println("max_level is "+maxLevel);
 		return true;
 	}
 	
@@ -105,4 +110,14 @@ public class LevelManager {
 		}
 		return null;
 	}
+
+	public int getCurLevel() {
+		return curLevel;
+	}
+
+	public void setCurLevel(int curLevel) {
+		this.curLevel = curLevel;
+	}
+	
+	
 }
