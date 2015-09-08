@@ -10,7 +10,7 @@ public class Hole {
 	
 	private Color origColor;
 	private Image mouse;
-	private boolean over = false;
+	private boolean last = false;
 	private int index;
 	private HoleState state = HoleState.FREE;
 	private static final float BUSY_TIME = 1.0f;
@@ -33,7 +33,22 @@ public class Hole {
 		
 		state = HoleState.FREE;
 		mouse.setColor(origColor);
+		Dds.gameScreen.addHitNum();
+		
+		if (last) {
+			Dds.gameScreen.setGameOver(true);
+		}
 		return true;
+	}
+	
+	public void miss() {
+		state = HoleState.FREE;
+		mouse.setColor(origColor);
+		
+		Dds.gameScreen.addMissNum();
+		if (last) {
+			Dds.gameScreen.setGameOver(true);
+		}
 	}
 	
 	public void step(float dt) {
@@ -43,13 +58,12 @@ public class Hole {
 		
 		busyTime -= dt;
 		if (busyTime <= 0) {
-			state = HoleState.FREE;
-			mouse.setColor(origColor);
+			miss();
 		}
 	}
 
-	public void setOver(boolean over) {
-		this.over = over;
+	public void setLast(boolean last) {
+		this.last = last;
 	}
 
 	public int getIndex() {
@@ -57,7 +71,7 @@ public class Hole {
 	}
 	
 	public void duuoo(boolean over) {
-		this.over = over;
+		this.last = over;
 		mouse.setColor(Color.GREEN);
 		state = HoleState.BUSY;
 		busyTime = BUSY_TIME;

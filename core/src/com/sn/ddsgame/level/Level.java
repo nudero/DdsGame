@@ -1,5 +1,7 @@
 package com.sn.ddsgame.level;
 
+import com.sn.ddsgame.Dds;
+
 public class Level {
 	
 	public static final int NONE = -2;
@@ -18,6 +20,10 @@ public class Level {
 		over = false;
 		stepIndex = 0;
 		stepTime = data.roundTime;
+		
+		Dds.gameScreen.setHitNum(0);
+		Dds.gameScreen.setMissNum(0);
+		Dds.gameScreen.setGameOver(false);
 	}
 	
 	public int step(float dt) {

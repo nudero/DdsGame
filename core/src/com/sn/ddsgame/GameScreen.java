@@ -20,6 +20,10 @@ import com.sn.ddsgame.level.LevelManager;
 
 public class GameScreen implements Screen {
 
+	enum GameState {
+		READY_GO, GOING, GAME_OVER
+	}
+	
 	DdsGame game;
 	Stage stage;
 	Skin skin;
@@ -35,16 +39,23 @@ public class GameScreen implements Screen {
 	private int curShowN = -1;
 	private Color origColor = null;
 	
+	private GameState gameState = GameState.READY_GO;
+	
 	
 	public int step = 0;
 	public int posindex = 0;
 	
-	private int score = 0;
-	private Label label;
+	private Label labelHit;
+	private Label labelMiss;
 	
-	private Level level = null;
+	private Level level;
+	
+	private int missNum = 0;
+	private int hitNum = 0;
+	private boolean gameOver = false;
 	
 	public GameScreen(DdsGame game) {
+		Dds.gameScreen = this;
 		this.game = game;
 		
 		stage = new Stage(new FitViewport(Const.DESIGN_WIDTH, Const.DESIGN_HEIGHT));
@@ -63,9 +74,13 @@ public class GameScreen implements Screen {
 		int w = (Const.DESIGN_HEIGHT - n*Const.PAD_DIST - 2*Const.EDGE_DIST) / n;
 		table.defaults().width(w).height(w).pad(Const.PAD_DIST);
 		
-		label = new Label("0", skin);
-		label.setAlignment(Align.right);
-		stage.addActor(label);
+		labelHit = new Label("0", skin);
+		labelHit.setAlignment(Align.right);
+		stage.addActor(labelHit);
+		
+		labelMiss = new Label("0", skin);
+		labelHit.setAlignment(Align.left);
+		stage.addActor(labelHit);
 		
 		LevelData ld = LevelManager.getInstance().getLevelData(LevelManager.getInstance().getCurLevel());
 		level = new Level(ld);
@@ -157,4 +172,39 @@ public class GameScreen implements Screen {
 		
 	}
 
+	public int getMissNum() {
+		return missNum;
+	}
+
+	public void addMissNum() {
+		missNum++;
+		labelMiss.setText(missNum+"");
+	}
+	
+	public void addHitNum() {
+		hitNum++;
+		labelMiss.setText(hitNum+"");
+	}
+	
+	public void setMissNum(int missNum) {
+		this.missNum = missNum;
+	}
+
+	public int getHitNum() {
+		return hitNum;
+	}
+
+	public void setHitNum(int hitNum) {
+		this.hitNum = hitNum;
+	}
+
+	public boolean isGameOver() {
+		return gameOver;
+	}
+
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
+	}
+
+	
 }
